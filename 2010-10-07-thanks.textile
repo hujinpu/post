@@ -1,0 +1,16 @@
+---
+layout: post
+title: 感谢老婆大人为我亲自设计iruby.me的UI
+category: design
+tags: design thanks html5 css3
+---
+
+老婆最近学习html和css一个多月，做了几个psd2html的作业，感觉进步速度要比我想象中好得多。这不，利用了国庆1天的时间就给我做了这个博客的ＵＩ，谢谢了。
+
+同时感谢 "Tom Preston Werner":http://tom.preston-werner.com/ 的 "jekyll": http://jekyllrb.com/ ，仔细读完所有源码，绝对的大师作品。
+
+本博客采用html5和css3的大量技术，固不考虑ie5.5--8.0，请使用firefox、safari或者chrome来浏览本博客。w3er.com从此更新，一直觉得w3er.com域名可以用做点有趣的互联网实验，而不是太个人化。
+
+<!-- -**-END-**- -->
+
+!/uploads/blog/2010/10/07/thanks.jpg(Thank you)!
