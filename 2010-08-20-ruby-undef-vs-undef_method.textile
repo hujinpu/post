@@ -1,0 +1,12 @@
+---
+layout: post
+title: undef和undef_method的细微区别
+category: ruby
+tags: ruby
+---
+
+ruby中undef是一个关键字，定义到 "keywords.rb":http://ruby-doc.org/docs/keywords/1.9/files/keywords_rb.html#M000037 ，而undef_method是一个在 "Module":http://ruby-doc.org/core/classes/Module.html#M001652 类中定义的方法。
+
+<!-- -**-END-**- -->
+
+undef和undef_method的区别在于，前者(undef)可以接受symbol、string或者method name，虽然官方文档里描述的是：传递过去的应该为method name（这个是文档的bug）。而后者(undef_method)支持symbol、string，不支持method name。

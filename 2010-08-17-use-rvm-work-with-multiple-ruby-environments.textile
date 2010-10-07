@@ -1,0 +1,51 @@
+---
+layout: post
+title: ruby多版本并存的管理之道--RVM
+category: ruby
+tags: ruby rvm
+---
+
+<abbr title="Ruby Version Manager">RVM</abbr>是一个命令行工具，使用它你可以快速的安装、管理多个版本的ruby以及对应的gems。
+
+RVM的安装：
+
+{% highlight bash %}
+bash < <( curl http://rvm.beginrescueend.com/releases/rvm-install-head )
+#注意两个小于号间有空格，以及第二个小于号与左括号间没有空格
+{% endhighlight %}
+
+安装某个版本的ruby：
+
+{% highlight bash %}
+rvm install ruby-1.9.1-p378 --docs
+
+rvm install ruby-head
+
+rvm install ruby-1.8.7 --head --docs
+{% endhighlight %}
+
+<!-- -**-END-**- -->
+
+<code>--docs</code>是编译安装后自动生成文档，<code>--head</code>是最新的版本（未必稳定，生产环境勿用！）
+
+如果要干净的删除某个版本的ruby，并且把文档和gems都删除，命令如下：
+
+{% highlight bash %}
+rvm remove ruby-1.9.1-p430 --docs --gems
+{% endhighlight %}
+
+使用某个ruby作为默认的版本：
+
+{% highlight bash %}
+rvm use ruby-1.9.1-p378 --default
+#rvm use --system #使用系统默认的版本
+{% endhighlight %}
+
+查询ruby版本信息：
+
+{% highlight bash %}
+rvm info #查看当前使用的ruby以及gems信息
+rvm list #查看rvm已经安装好的ruby的版本
+{% endhighlight %}
+
+常用的都在上面，其他的我觉得就可以直接看<code>rvm usage</code>和 "官方文档":http://rvm.beginrescueend.com/ 了。

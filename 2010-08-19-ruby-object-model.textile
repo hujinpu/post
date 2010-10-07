@@ -1,0 +1,166 @@
+---
+layout: post
+title: Ruby's Object Model
+category: ruby
+tags: ruby
+---
+
+What’s an object? It’s just a bunch of instance variables, plus a link to a class. The object’s methods don’t live in the object—they live in the object’s class, where they’re called the instance methods of the class.
+What’s a class? It’s just an object (an instance of Class), plus a list of instance methods and a link to a superclass. Class is a subclass of Module, so a class is also a module.
+
+<!-- -**-END-**- -->
+
+Like any object, a class has its own methods, such as new( ). These are instance methods of the Class class. Also like any object, classes must be accessed through references. You already have a constant reference to each class: the class’s name.
+
+The class of Class must be Class itself.
+
+{% highlight ruby %}
+class MyClass; end
+
+obj1 = MyClass.new
+obj2 = MyClass.new
+
+obj3 = MyClass.new
+obj3.instance_variable_set("@x", 10)
+obj3.instance_variable_get("@x") # => 10
+{% endhighlight %}
+
+<img src="/uploads/blog/2010/08/19/objects-classes.png" alt="objects classes" class="w520">
+
+Constants are arranged in a tree similar to a file system, where the names of modules and classes play the part of directories and regular constants play the part of files.
+
+Suming up the process of method lookup in a single sentence: to find a method, Ruby goes in the receiver’s class, and from there it climbs the ancestors chain until it finds the method.
+
+{% highlight ruby %}
+class MyClass
+  def my_method; 'my_method()'; end
+end
+
+class MySubclass < MyClass
+end
+
+obj = MySubclass.new
+obj.my_method()       # => "my_method()"
+
+MySubclass.ancestors # => [MySubclass, MyClass, Object, Kernel, BasicObject]
+{% endhighlight %}
+
+<img src="/uploads/blog/2010/08/19/method-lockup.png" alt="method lockup" class="w520">
+
+The ancestors chain goes from class to superclass. Actually, the ancestors chain also includes modules.
+
+{% highlight ruby %}
+module M
+  def my_method
+    'M#my_method()'
+  end
+end
+
+class C
+  include M
+end
+
+class D < C; end
+
+D.new.my_method() # => "M#my_method()"
+
+D.ancestors # => [D, C, M, Object, Kernel, BasicObject]
+{% endhighlight %}
+
+<img src="/uploads/blog/2010/08/19/ancestors.png" alt="ancestors" class="w520" />
+
+If you want to become a master of Ruby, you should always know which object has the role self at any given moment.  All methods called without an explicit receiver are called on self.  
+
+As soon as you start a Ruby program, you’re sitting within an object named main that the Ruby interpreter created for you. This object is sometimes called the top-level context, because it’s the object you’re in when you’re at the top level of the call stack: either you haven’t called any method yet or all the methods that you called have returned.
+
+Private methods are governed by a single simple rule: you cannot call a private method with an explicit receiver. In other words, every time you call a private method, it must be on the implicit receiver—self.
+
+{% highlight ruby %}
+class C
+  def public_method
+    self.private_method
+  end
+
+  private 
+
+  def private_method; end
+end
+
+C.new.public_method # => NoMethodError: private method ‘private_method' called [...]
+{% endhighlight %}
+
+Seven rules of the Ruby object model:
+* There is only one kind of object—be it a regular object or a module.
+* There is only one kind of module—be it a regular module, a class, an eigenclass, or a proxy class(include a module into a class will generate proxy class).
+* There is only one kind of method, and it lives in a module—most often in a class.
+* Every object, classes included, has its own “real class,” be it a regular class or an eigenclass.
+* Every class has exactly one superclass, with the exception of BasicObject (or Object if you’re using Ruby 1.8), which has none. This means you have a single ancestors chain from any class up to BasicObject.
+* The superclass of the eigenclass of an object is the object’s class. The superclass of the eigenclass of a class is the eigenclass of the class’s superclass. 
+* When you call a method, Ruby goes “right” in the receiver’s real class and then “up” the ancestors chain. That’s all there is to know about the way Ruby finds methods.
+
+<img src="/uploads/blog/2010/08/19/seven-rules.png" alt="seven rules" class="w520" />
+
+{% highlight ruby %}
+class C
+  def a_method
+    'C#a_method()'
+  end
+end
+
+class D < C; end
+
+obj = D.new
+
+class Object
+  def eigenclass
+    class << self; self; end
+  end
+end
+
+class << obj
+  def a_singleton_method
+    'obj@a_singleton_method()'
+  end
+end
+
+puts "obj.eigenclass.superclass is #{obj.eigenclass.superclass}"
+
+class C
+  class << self
+    def a_class_method
+      'C.a_class_method()'
+    end
+  end
+
+  def self.another_class_method
+    'C.another_class_method'
+  end
+end
+
+puts "C.eigenclass is #{C.eigenclass}"
+puts "D.eigenclass is #{D.eigenclass}"
+puts "D.eigenclass.superclass is #{D.eigenclass.superclass}"
+puts "C.eigenclass.superclass is #{C.eigenclass.superclass}"
+puts "D.a_class_method is #{D.a_class_method}"
+puts "D.another_class_method is #{D.another_class_method}"
+puts "D.singleton_methods is #{D.singleton_methods}"
+puts "D.eigenclass.instance_methods contains #{D.eigenclass.instance_methods.grep /(a|another)_class_method/}"
+puts "C.singleton_methods is #{C.singleton_methods}"
+puts "C.eigenclass.instance_methods contains #{C.eigenclass.instance_methods.grep /(a|another)_class_method/}"
+{% endhighlight %}
+
+outputs:
+
+{% highlight ruby %}
+obj.eigenclass.superclass is D
+C.eigenclass is #<Class:C>
+D.eigenclass is #<Class:D>
+D.eigenclass.superclass is #<Class:C>
+C.eigenclass.superclass is #<Class:Object>
+D.a_class_method is C.a_class_method()
+D.another_class_method is C.another_class_method
+D.singleton_methods is [:a_class_method, :another_class_method]
+D.eigenclass.instance_methods contains [:a_class_method, :another_class_method]
+C.singleton_methods is [:a_class_method, :another_class_method]
+C.eigenclass.instance_methods contains [:a_class_method, :another_class_method]
+{% endhighlight %}

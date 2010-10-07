@@ -1,0 +1,89 @@
+---
+layout: post
+title: BDD with rspec and cucumber
+category: ruby
+tags: ruby rspec cucumber
+---
+
+*BDD puts the focus on behaviour instead of structure, and it does so at every level of development.*  Whether we’re talking an object calculating the distance between two cities, or another object delegating a search off to a 3rd party service, or a user-facing screen providing feedback when we provide invalid input, it’s all behaviour!
+
+<!-- -**-END-**- -->
+
+We believe that most of the problems that software development teams face are communication problems. BDD aims to help communication by simplifying the language we use to describe scenarios in which the software will be used: *Given* some context, *When* some event occurs, *Then* I expect some outcome.
+
+Given/When/Then, the BDD triad, are simple words that we use whether we’re talking about application behaviour or object behaviour. They are easily understood by business analysts, testers, and developers alike.
+
+*We use Cucumber to describe the behaviour of applications and RSpec to describe the behaviour of objects.*
+
+For ruby-1.9.2-p0:
+
+{% highlight bash %}
+gem install rspec --version 2.0.0.beta.19
+gem install cucumber --version 0.8.5
+{% endhighlight %}
+
+!/uploads/blog/2010/09/02/bdd-cycle.png!
+
+Both cycles involve taking small steps and listening to the feedback you get from the tools.We start with a failing step (red) in Cucumber (the outer cycle). To get that step to pass, we’ll drop down to RSpec (the inner cycle) and drive out the underlying code at a granular level (red/green/refactor).
+
+At each green point in the RSpec cycle, we’ll check the Cucumber cycle. If it is still red, the resulting feedback should guide us to the next action in the RSpec cycle. If it is green, we can jump out to Cucumber, refactor if appropriate, and then repeat the cycle by writing a new failing
+Cucumber step.
+
+PS: *Although we use Cucumber to focus on high level behaviour and RSpec on more granular behaviour, each can be used for either purpose.*
+
+Hello world example:
+
+feature:
+
+{% highlight ruby %}
+Feature: greeter says hello
+
+  In order to start learning RSpec and Cucumber
+  As a reader of The RSpec Book
+  I want a greeter to say Hello
+  
+  Scenario: greeter says hello
+    Given a greeter
+    When I send it the greet message
+    Then I should see "Hello Cucumber!"
+{% endhighlight %}
+
+steps:
+
+{% highlight ruby %}
+class CucumberGreeter
+  def greet
+    "Hello Cucumber!"
+  end
+end
+
+Given /^a greeter$/ do
+  @greeter = CucumberGreeter.new
+end
+
+When /^I send it the greet message$/ do
+  @message = @greeter.greet
+end
+
+Then /^I should see "([^"]*)"$/ do |greeting|
+  @message.should == greeting
+end
+{% endhighlight %}
+
+Rspec => spec
+
+{% highlight ruby %}
+class RSpecGreeter
+  def greet
+    "Hello RSpec!"
+  end
+end
+
+describe "RSpec Greeter" do                                              
+  it "should say 'Hello RSpec!' when it receives the greet() message" do 
+    greeter = RSpecGreeter.new        
+    greeting = greeter.greet          
+    greeting.should == "Hello RSpec!" 
+  end
+end
+{% endhighlight %}

@@ -1,0 +1,65 @@
+---
+layout: post
+title: proc和lambda的细微区别
+category: ruby
+tags: ruby lambda
+---
+
+第一， **如果是用return关键字，return的地方不一样** ：
+** lambda return的地方是lambda本身；
+** proc return的地方为proc被定义的地方，而且call方法执行后，下面的流程无法执行。
+
+{% highlight ruby %}
+def double(callable_object)
+  callable_object.call * 2
+end  
+
+l = lambda { return 10 }
+puts double(l) # => 20
+
+def another_double
+  p = Proc.new { return 10 }
+
+  l = lambda { return 100 }
+  puts double(l) # => 200
+  puts "ok"
+
+  result = p.call
+  puts "result in another_double is #{result}"
+  return result * 2  # unreachable code!
+end
+
+puts another_double # => 10
+
+p = Proc.new { return 10 }
+# unexpected return (LocalJumpError)
+double(p)    
+{% endhighlight %}
+
+<!-- -**-END-**- -->
+
+但如果不是用严格的return关键字返回，那么lambda和proc在这点上一致。
+
+{% highlight ruby %}
+p = Proc.new { 10 }
+puts double(p)   # => 20
+{% endhighlight %}
+
+第二， **lambda对于传入的参数的个数要求很严格，而proc（以及常规的block）最内部做异常处理** ：
+
+{% highlight ruby %}
+p = Proc.new {|a, b| [a, b]}
+puts p.arity # => 2
+
+p = Proc.new {|a, b| [a, b]}
+puts p.call(1, 2, 3)   # => [1, 2]
+puts p.call(1)         # => [1, nil]
+
+p = lambda {|a, b| [a, b]}
+# wrong number of arguments (1 for 2)
+puts p.call(1)
+{% endhighlight %}
+
+最后，值得注意的是：ruby1.8中 Kernel#proc()和Kernel#lambda()是同义词；而ruby1.9中修正为：Kernel#proc()是Proc.new的同义词，同时在1.9中可以这样写lambda： <code>p = ->(x) {x+1}</code> ，很cool不是吗。
+
+ps: 鉴于lambda的严格和合理的return，建议使用 <code>iruby_me = ->(x) {"This is #{x}!"}</code>
