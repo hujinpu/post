@@ -1,0 +1,75 @@
+---
+layout: post
+title: 小心你的字符拼接手段
+category: ruby
+tags: ruby trap
+---
+
+我们知道拼接ruby的字符串有2中方式，一种是'string1' &lt;&lt; 'string2'，一种是'string1' + 'string2'，其实这里有一个陷阱，各位ruby fans小心了。
+
+<!-- -**-END-**- -->
+
+先看代码：
+
+{% highlight ruby %}
+ruby-1.9.2-p0 > orig = 'string1'
+ => "string1" 
+ruby-1.9.2-p0 > copy = orig
+ => "string1" 
+ruby-1.9.2-p0 > copy.__id__ == orig.__id__
+ => true 
+ruby-1.9.2-p0 > copy.__id__
+ => 2152010920
+ruby-1.9.2-p0 > copy << 'string2'
+ => "string1string2" 
+ruby-1.9.2-p0 > copy
+ => "string1string2" 
+ruby-1.9.2-p0 > orig
+ => "string1string2" 
+ruby-1.9.2-p0 > copy.__id__ == orig.__id__
+ => true
+ruby-1.9.2-p0 > copy.__id__
+ => 2152010920
+ruby-1.9.2-p0 > copy += 'string3'
+ => "string1string2string3" 
+ruby-1.9.2-p0 > copy
+ => "string1string2string3" 
+ruby-1.9.2-p0 > orig
+ => "string1string2" 
+ruby-1.9.2-p0 > copy.__id__ == orig.__id__
+ => false
+ruby-1.9.2-p0 > copy.__id__ != 2152010920
+ => true 
+{% endhighlight %}
+
+最初，copy只是'string1'的一个新的引用，它还有一个老的引用是orig。对于 &lt;&lt; 的操作，改变的是引用的内容，所以所有引用还是对应同一个字符对象'string1string2'，而 + 的操作会新建立一个新的字符对象'string1string2string3'。但是否 &lt;&lt; 比 + 更有效率呢？答案是benchmark。
+
+{% highlight ruby %}
+require "benchmark"
+
+test1 = ''
+test2 = ''
+
+def runtest1(str)
+  str << 'x'
+end
+
+def runtest2(str)
+  str += 'x'
+end
+
+Benchmark.bm do|x|
+  x.report {1000.times {runtest1(test1)}}
+  x.report {1000.times {runtest2(test2)}}
+  x.report {5000.times {runtest1(test1)}}
+  x.report {5000.times {runtest2(test2)}}
+end
+
+<<-Result
+   user     system      total        real
+0.000000   0.000000   0.000000 (  0.000371)
+0.000000   0.000000   0.000000 (  0.001064)
+0.000000   0.000000   0.000000 (  0.001886)
+0.000000   0.000000   0.000000 (  0.001546)
+Result
+{% endhighlight %}
