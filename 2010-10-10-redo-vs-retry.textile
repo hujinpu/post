@@ -1,0 +1,55 @@
+---
+layout: post
+title: redo和retry的区别
+category: translate
+tags: translate ruby rubyquicktips
+---
+
+redo和retry都是用来重复循环的。但他们的效果还是不同的：redo重复的是 **当前迭代的操作** ，而retry会 **重新开始整个循环** 。
+
+redo举例:
+
+{% highlight ruby %}
+(0..5).each do |i|
+  puts "Value: #{i}"
+  redo if i > 2
+end
+{% endhighlight %}
+
+结果表明，只有最后一个迭代操作被重复[1]。
+
+{% highlight text %}
+Value: 0
+Value: 1
+Value: 2
+Value: 3
+Value: 3
+Value: 3
+# ... 这是一个无限的循环
+{% endhighlight %}
+
+retry举例:
+
+{% highlight ruby %}
+(0..5).each do |i|
+  puts "Value: #{i}"
+  retry if i > 2
+end
+{% endhighlight %}
+
+很明显，在经历retry后[2]，重新开始了整个循环。
+
+{% highlight text %}
+Value: 0
+Value: 1
+Value: 2
+Value: 3
+Value: 0
+Value: 1
+Value: 2
+# ... 这也是一个无限的循环
+{% endhighlight %}
+
+fn1. 译注：此时i的值为3
+
+fn2. 译注：此时i的值为3
