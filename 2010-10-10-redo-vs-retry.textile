@@ -16,6 +16,8 @@ redo举例:
 end
 {% endhighlight %}
 
+<!-- -**-END-**- -->
+
 结果表明，只有最后一个迭代操作被重复[1]。
 
 {% highlight text %}
