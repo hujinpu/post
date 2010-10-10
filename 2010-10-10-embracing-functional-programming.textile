@@ -1,0 +1,31 @@
+---
+layout: post
+title: 拥抱函数式编程
+category: translate
+tags: translate ruby rubyquicktips
+---
+前几天的晚上Yehuda Katz在其twitter上提了一个问题： "用ruby把“X::Y::Z”变为[“X::Y::Z”, “X::Y”, “X”]最简单的方法是什么？":http://twitter.com/wycats/status/9042964562
+
+我决定采 "函数式编程":http://en.wikipedia.org/wiki/Functional_programming 来完成这个挑战。换言之，我怎样才能在不采用 "过程式编程":http://en.wikipedia.org/wiki/Procedural_programming 的情况下完成这次变换呢？
+
+<!-- -**-END-**- -->
+
+首先我需要以::来切分这个字符串，这使用 "split命令":http://rubyquicktips.tumblr.com/post/345823279/split-a-string-with-split 就可以了。然后需要递归的迭代，但不管是用 "each":http://www.ruby-doc.org/core/classes/Array.html#M002173 还是 "map":http://www.ruby-doc.org/core/classes/Array.html#M002189 ，都需要一些外部的变量[1]。使用 "inject":http://www.ruby-doc.org/core/classes/Enumerable.html#M003140 吧!给inject传入一个空数组，我们就可以在每次迭代时，使用最近加入的变量[2]来修改这个数组。瞧，下面是全部的代码：
+
+{% highlight ruby %}
+module_name = "X::Y::Z"
+module_name.split('::').inject([]) { |memo,x| memo.unshift(memo.empty? ? x : "#{memo[0]}::#{x}") }
+=> ["X::Y::Z", "X::Y", "X"]
+{% endhighlight %}
+
+厉害吧，完全不是过程式编程，而且代码清晰易懂且 "无副作用":http://en.wikipedia.org/wiki/Side_effect_(computer_science) 。
+
+相关参考：
+
+* "是用'split'切分一个字符串":http://rubyquicktips.tumblr.com/post/345823279/split-a-string-with-split
+* "注入你的迭代":http://rubyquicktips.tumblr.com/post/338980244/inject-your-enumerables
+* "数组的unshift方法的文档":http://www.ruby-doc.org/core/classes/Array.html#M002171
+
+fn1. 译者注：需要一个迭代操作体之外的变量来记录些中间状态。
+
+fn2. 译者注：这里就是x，它的值在3迭代中分别为："X"、"Y"和"Z"。
