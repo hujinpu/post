@@ -1,0 +1,31 @@
+---
+layout: post
+title: 让模块中的方法直接可测
+category: translate
+tags: translate ruby rubyquicktips
+---
+
+今天开始，我会陆续翻译 "rubyquicktips":http://rubyquicktips.tumblr.com/ 中的文章，一来它被gfw了，影响广大ruby fans的学习，二来翻译其实是对中文和英文深入学习的最好的方法，也方便那些不太愿意读英文的同学。
+
+如果你想让你的函数更好的被重用，把它们放进一个模块是很好的选择。这样一来，你变得无法直接调用模块里面的方法了，因此模块的测试也有了麻烦。
+
+<!-- -**-END-**- -->
+
+其实方法是有的：使用<code>extend self</code>。这可以在模块的类方法中加入其实例方法。这样你就可以直接调用里面的方法而无需通过引入这个模块的类的实例了。
+
+{% highlight ruby %}
+module ShoutMachine
+  extend self
+
+  def shout(text)
+    "#{text.upcase}!"
+  end
+end
+
+class BigMachine
+  include ShoutMachine
+end
+
+>> ShoutMachine.shout('booyeah')   # => BOOYEAH!
+>> BigMachine.new.shout('booyeah') # => BOOYEAH!
+{% endhighlight %}
