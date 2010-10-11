@@ -4,9 +4,9 @@ title: 拥抱函数式编程
 category: translate
 tags: translate ruby rubyquicktips
 ---
-前几天的晚上Yehuda Katz在其twitter上提了一个问题： "用ruby把“X::Y::Z”变为[“X::Y::Z”, “X::Y”, “X”]最简单的方法是什么？":http://twitter.com/wycats/status/9042964562
+前几天晚上Yehuda Katz在twitter上提了一个问题： "用ruby把“X::Y::Z”变为[“X::Y::Z”, “X::Y”, “X”]最简单的方法是什么？":http://twitter.com/wycats/status/9042964562
 
-我决定采 "函数式编程":http://en.wikipedia.org/wiki/Functional_programming 来完成这个挑战。换言之，我怎样才能在不采用 "过程式编程":http://en.wikipedia.org/wiki/Procedural_programming 的情况下完成这次变换呢？
+我决定采 "函数式编程":http://en.wikipedia.org/wiki/Functional_programming 来完成这个挑战。换言之，我怎样才能在避免 "过程式编程":http://en.wikipedia.org/wiki/Procedural_programming 呢？
 
 <!-- -**-END-**- -->
 
