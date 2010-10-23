@@ -1,0 +1,98 @@
+---
+layout: post
+title: Crash Course in Objective-C Study Note
+category: objc
+tags: objc ios
+published: false
+---
+
+To import a header file from one of the frameworks, you spec- ify the header filename using angle brackets (&lt;&gt;) in the #import statement. To import a header file from within your project, you use the “​and​” characters.
+
+To declare a class, you use the @interface compiler directive, like this:
+
+{% highlight objc %}
+@interface SomeClass : NSObject {
+
+}
+{% endhighlight %}
+
+<!-- -**-END-**- -->
+
+NSObject is the root class of most Objective-C classes. It defines the basic interface of a class and contains methods common to all classes that inherit from it. NSObject also provides the standard memory management and initialization framework used by most objects in Objective-C as well as reflection and type operations.
+
+To implement a class declared in the header file, you use the @implementation compiler directive, like this:
+
+{% highlight objc %}
+#import "SomeClass.h"
+
+@implementation SomeClass
+
+@end
+{% endhighlight %}
+
+Objective-C uses the @class compiler directive as a forward declaration to inform the compiler that the class you specified is a valid class. You usually use the @class compiler directive in the header file, and in the implementation file you can use the @import compiler directive to tell the compiler more about the content of the class that you are using. **But to remember importing relative header file in implementation file.**
+
+{% highlight objc %}
+//--SomeClass.h--
+#import​<Foundation/Foundation.h>
+
+@class AnotherClass;	//---forward declaration---
+
+@interface​ SomeClass ​: ​NSObject ​{ 
+	​​​​//---an​ object ​from ​AnotherClass---​​​​
+	​​​​AnotherClass​ *anotherClass; 
+}
+	
+@end
+	
+//---AnotherClass.h---
+#import​<Foundation/Foundation.h>
+
+@class SomeClass;	//---forward declaration---
+	
+@interface ​AnotherClass ​: ​NSObject ​{
+	​​​​SomeClass​ *someClass;​​
+	//---using​ an ​instance​of ​SomeClass---
+}
+		
+@end
+{% endhighlight %}
+
+In Objective-C, you need to prefix an object name with the * character when you declare an object. If you are declaring a variable of primitive type (such as float, int, CGRect, NSInteger, and so on), the * character is not required. To create an instance of a class:
+
+{% highlight objc %}
+CGRect frame;​​​//---CGRect​is​a​structure---
+int number;​​​​​//---int​is​a​primitive​type---
+NSString *str;​​//---NSString​is​a​class
+SomeClass *someClass​ = ​[SomeClass​alloc];
+id someClass​ = ​[SomeClass​alloc];
+{% endhighlight %}
+
+Instance methods can be called only using an instance of the class. Instance methods are prefixed with the minus sign (-) character.
+Class methods can be invoked directly using the class name and do not need an instance of the class in order to work. Class methods are prefixed with the plus sign (+) character.
+
+It is important to note the names of methods and to differentiate those that have parameters from those that do not. For example, doSomething refers to a method with no parameter, whereas doSomething: refers to a method with one parameter, and doSomething:withAnotherPara: refers to a method with two parameters. The presence or absence of colons in a method name dictates which method is invoked during runtime. 
+
+In Objective-C 2.0, you don’t need to define getters and setters in order to expose fields as properties. You can do so via the @property and @synthesize compiler directives. Using the same example, you can use the @property to expose the rate and name fields as properties, like this:
+
+{% highlight objc %}
+@interface TestClass : NSObject
+
+	@property (retain, nonatomic) NSString *name;
+
+@end
+
+
+#import "TestClass.h"
+
+
+@implementation TestClass
+
+	@synthesize name;
+
+@end
+{% endhighlight %}
+
+The dealloc method of a class is fired whenever the reference count of its object reaches 0.
+
+The didReceiveMemoryWarning method will be called whenever your iPhone runs out of memory. You should insert code in this method so that you can free resources/objects that you do not need.

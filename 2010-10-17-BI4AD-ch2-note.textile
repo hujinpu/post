@@ -1,0 +1,21 @@
+---
+layout: post
+title: BI4AD Chapter2 Study Notes
+category: ios
+tags: ios study
+published: false
+---
+
+The minimum image size you should design is 57 × 57 pixels (or 114 × 114 pixels for high resolution). It is OK to design a larger image because the iPhone automatically resizes it for you. In general, try to design a larger image because doing so prepares your application for the newer devices that Apple may roll out.
+
+The easiest way to add a splash screen is to add an image named Default.png to the Resources folder of your Xcode project. This image must be sized 480 × 320 pixels (or 960 × 640 pixels for high resolution).
+
+<!-- -**-END-**- -->
+
+When adding an image to the Resources folder in your Xcode project, why do you need to check the “Copy items into destination group’s folder (If needed)” option?
+
+This is to ensure that the image is always copied into the Resources folder. If not, Xcode only makes a reference to the image; it is not physically in the Resources folder.
+
+"Creating Custom Icons and Images":http://developer.apple.com/library/ios/#documentation/userexperience/conceptual/mobilehig/IconsImages/IconsImages.html
+
+"Key Summary":http://developer.apple.com/library/ios/#documentation/General/Reference/InfoPlistKeyReference/Articles/iPhoneOSKeys.html
