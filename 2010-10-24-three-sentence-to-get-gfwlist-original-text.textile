@@ -19,4 +19,4 @@ open('/Users/hujinpu/Proxy/7070.original', 'w').write(Base64.decode64($1))
 
 /Users/hujinpu/Proxy/7070是你下载到的加密的pac文件。
 
-PS: chrome可以使用 "switchy":http://www.samabox.com/projects/chrome/switchy/ 直接使用这个解密后的文件（这里是：/Users/hujinpu/Proxy/7070.original）来定制规则。
+PS: chrome可以使用 "switchy":http://www.samabox.com/projects/chrome/switchy/ 插件，并让该插件直接使用这个解密后的文件（这里是：/Users/hujinpu/Proxy/7070.original）来自动配置规则。
