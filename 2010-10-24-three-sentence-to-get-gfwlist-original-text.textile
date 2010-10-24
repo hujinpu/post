@@ -7,7 +7,7 @@ tags: ruby gfw
 
 在这个神奇的土地，有时候越想为社会做些贡献，越是受到一些阻力。作一名程序员，及时更新自己的知识是必要的，但很多好的资源都被神奇的拦截了，感觉像唐僧取经一样，非得经历七七四十九重磨难才能获取，也许这样才更加懂得珍惜吧。
 
-现在网上有由网友制作的"gfwlist pac":http://autoproxy2pac.appspot.com/ 文件，但出于磨练心智考虑，也加了一层base64。下载下来如果自己要加入一些自己的规则还不太方便，这里给出使用ruby3句话搞定的一个脚本，希望给网友在西天取经途中带来一点便利。
+现在网上有由网友制作的 "gfwlist pac":http://autoproxy2pac.appspot.com/ 文件，但出于磨练心智考虑，也加了一层base64。下载下来如果自己要加入一些自己的规则还不太方便，这里给出使用ruby3句话搞定的一个脚本，希望给网友在西天取经途中带来一点便利。
 
 {% highlight ruby %}
 require 'base64'
@@ -19,4 +19,4 @@ open('/Users/hujinpu/Proxy/7070.original', 'w').write(Base64.decode64($1))
 
 /Users/hujinpu/Proxy/7070是你下载到的加密的pac文件。
 
-PS: chrome可以使用"switchy":http://www.samabox.com/projects/chrome/switchy/ 直接使用这个解密后的文件来定制规则。
+PS: chrome可以使用 "switchy":http://www.samabox.com/projects/chrome/switchy/ 直接使用这个解密后的文件（这里是：/Users/hujinpu/Proxy/7070.original）来定制规则。
