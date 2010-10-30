@@ -1,0 +1,38 @@
+---
+layout: post
+title: ruby Struct 的妙用
+category: ruby
+tags: ruby
+---
+
+这是 "Ruby Quicktips":http://rubyquicktips.tumblr.com/post/1422387295/using-struct-new-to-quickly-create-classes-with 新发的一篇，觉得翻译太短，没有必要，倒是不如以后写一些自己的理解或对其的补充。
+
+Struct可以很方便的绑定一些可以读写的属性。
+
+{% highlight ruby %}
+class Office < Struct.new("Place", :coffee, :cigarettes)
+end
+
+o = Office.new
+o.coffee = true
+puts o.to_s
+#=> #<struct Office coffee=true, cigarettes=nil>
+{% endhighlight %}
+
+<!-- -**-END-**- -->
+
+具体细节可以见Struct类的 "api":http://www.ruby-doc.org/core/classes/Struct.html ，注意new方法里的aString。
+
+{% highlight ruby %}
+# Create a structure with a name in Struct
+Struct.new("Customer", :name, :address)
+#=> Struct::Customer
+Struct::Customer.new("Dave", "123 Main")
+#=> #<Struct::Customer name="Dave", address="123 Main">
+
+# Create a structure named by its constant
+Customer = Struct.new(:name, :address)
+#=> Customer
+Customer.new("Dave", "123 Main")
+#=> #<Customer name="Dave", address="123 Main">
+{% endhighlight %}
