@@ -1,0 +1,8 @@
+---
+layout: post
+title: blog transfer to hjp.im
+category: site
+tags: site
+---
+
+blog transfer to hjp.im
