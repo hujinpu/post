@@ -5,4 +5,4 @@ category: site
 tags: site
 ---
 
-blog transfer to hjp.im
+blog transfer to "hjp.im":http://hjp.im
